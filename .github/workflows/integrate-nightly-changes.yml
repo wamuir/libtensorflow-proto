@@ -86,7 +86,7 @@ jobs:
         run: |
           git config --global user.name 'William Muir'
           git config --global user.email 'wamuir@gmail.com'
-          git add tensorflow/
+          git add .
           git commit -m "[automated] Integrate changes from nightly build" \
             -m "tensorflow/tensorflow@${{ needs.build.outputs.nightly-hash }}"
           git push
