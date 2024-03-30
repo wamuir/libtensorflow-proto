@@ -72,7 +72,7 @@ jobs:
 
       - name: Extract C licenses
         run: |
-          tar -cf clicenses.tar
+          tar -xf clicenses.tar
           rm clicenses.tar
 
       - name: Check working tree for changes
