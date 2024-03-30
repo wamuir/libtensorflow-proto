@@ -1,0 +1,92 @@
+---
+name: nightly
+
+on:
+  schedule:
+    - cron: '00 4 * * *'
+  workflow_dispatch:
+
+jobs:
+  
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      nightly-hash: ${{ steps.lsh-remote.outputs.nightly-hash }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: tensorflow/tensorflow
+
+      - name: Get commit hash
+        id: lsh-remote
+        run: |
+          H=$(git ls-remote -h https://github.com/tensorflow/tensorflow nightly)
+          echo "nightly-hash=$(echo ${H} | awk '{ print $1 }')" >> $GITHUB_OUTPUT
+
+      - name: Log Bazel version
+        run: bazelisk version
+
+      - name: Build proto archive
+        run: CC=clang bazelisk build -- //tensorflow/tools/lib_package:libtensorflow_proto.zip
+
+      - name: Upload protos
+        uses: actions/upload-artifact@v3
+        with:
+          name: libtensorflow_proto
+          path: bazel-bin/tensorflow/tools/lib_package/libtensorflow_proto.zip
+          retention-days: 3
+
+      - name: Build C license archive
+        run: CC=clang bazelisk build -- //tensorflow/tools/lib_package:clicenses.tar
+
+      - name: Upload C licenses
+        uses: actions/upload-artifact@v3
+        with:
+          name: clicenses
+          path: bazel-bin/tensorflow/tools/lib_package/clicenses.tar
+          retention-days: 3
+
+  commit:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: nightly
+
+      - name: Download protos
+        uses: actions/download-artifact@v3
+        with:
+          name: libtensorflow_proto
+
+      - name: Extract protos
+        run: |
+          rm -rf tensorflow tsl
+          unzip libtensorflow_proto.zip
+          rm libtensorflow_proto.zip
+      
+      - name: Download C licenses
+        uses: actions/download-artifact@v3
+        with:
+          name: clicenses
+
+      - name: Extract C licenses
+        run: |
+          tar -cf clicenses.tar
+          rm clicenses.tar
+
+      - name: Check working tree for changes
+        id: git-status
+        run: |
+          M=$([ -n "$(git status --porcelain)" ] && echo true || echo false)
+          echo "repo-changes=${M}" >> $GITHUB_OUTPUT
+
+      - name: Commit changes
+        if: ${{ steps.git-status.outputs.repo-changes == 'true' }}
+        run: |
+          git config --global user.name 'William Muir'
+          git config --global user.email 'wamuir@gmail.com'
+          git add tensorflow/
+          git commit -m "[automated] Integrate changes from nightly build" \
+            -m "tensorflow/tensorflow@${{ needs.build.outputs.nightly-hash }}"
+          git push
