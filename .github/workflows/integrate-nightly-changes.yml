@@ -19,9 +19,7 @@ jobs:
 
       - name: Get commit hash
         id: lsh-remote
-        run: |
-          H=$(git ls-remote -h https://github.com/tensorflow/tensorflow nightly)
-          echo "nightly-hash=$(echo ${H} | awk '{ print $1 }')" >> $GITHUB_OUTPUT
+        run: echo "nightly-hash=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
 
       - name: Log Bazel version
         run: bazelisk version
