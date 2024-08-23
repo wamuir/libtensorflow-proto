@@ -60,7 +60,7 @@ jobs:
 
       - name: Extract protos
         run: |
-          rm -rf tensorflow tsl
+          rm -rf external tensorflow tsl
           unzip libtensorflow_proto.zip
           rm libtensorflow_proto.zip
       
