@@ -1,5 +1,8 @@
 syntax = "proto3";
 
+// TODO(b/247876220): Change package and java_package once we figure out how to
+// migrate.
+
 package tensorflow.error;
 
 option cc_enable_arenas = true;
