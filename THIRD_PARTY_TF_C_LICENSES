@@ -3158,7 +3158,7 @@ BEGIN LICENSE FOR external/com_github_googlecloudplatform_google_cloud_cpp/LICEN
 END LICENSE FOR external/com_github_googlecloudplatform_google_cloud_cpp/LICENSE
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
-BEGIN LICENSE FOR third_party/mkl_dnn/LICENSE
+BEGIN LICENSE FOR external/local_xla/third_party/mkl_dnn/LICENSE
 --------------------------------------------------------------------------------
                                  Apache License
                            Version 2.0, January 2004
@@ -3362,5 +3362,5 @@ BEGIN LICENSE FOR third_party/mkl_dnn/LICENSE
    See the License for the specific language governing permissions and
    limitations under the License.
 --------------------------------------------------------------------------------
-END LICENSE FOR third_party/mkl_dnn/LICENSE
+END LICENSE FOR external/local_xla/third_party/mkl_dnn/LICENSE
 --------------------------------------------------------------------------------
