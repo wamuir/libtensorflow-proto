@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: tensorflow/tensorflow
-          ref: ${{ github.ref }}
+          ref: 'v2.18.0' # ${{ github.ref }}
 
       - name: Get commit hash
         id: rev-parse
